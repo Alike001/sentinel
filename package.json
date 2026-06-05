@@ -1,0 +1,28 @@
+{
+  "name": "sentinel",
+  "version": "1.0.0",
+  "description": "Policy-guarded AI agent that signs Ethereum transactions only after human approval on a Ledger device (DMK + Speculos).",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "start": "tsx src/index.ts",
+    "spike:address": "tsx src/spike-address.ts"
+  },
+  "keywords": ["ledger", "dmk", "speculos", "ai-agent", "ethereum"],
+  "author": "Hammed Ali Oyeleye (Alike001)",
+  "license": "MIT",
+  "dependencies": {
+    "@ledgerhq/device-management-kit": "^1.5.1",
+    "@ledgerhq/device-signer-kit-ethereum": "^1.16.0",
+    "@ledgerhq/device-transport-kit-speculos": "^1.2.1",
+    "dotenv": "^17.4.2",
+    "rxjs": "^7.8.2",
+    "viem": "^2.52.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}
