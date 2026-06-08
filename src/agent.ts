@@ -27,22 +27,42 @@ export async function parseIntent(text: string, llm: LlmCall = groqCall): Promis
 }
 
 async function groqCall(text: string): Promise<string> {
-  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "llama-3.3-70b-versatile",
-      temperature: 0,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: SYSTEM },
-        { role: "user", content: text },
-      ],
-    }),
-  });
+  if (!process.env.GROQ_API_KEY) {
+    throw new Error("GROQ_API_KEY is not set in .env");
+  }
+
+  let res: Response;
+  try {
+    res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        temperature: 0,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: SYSTEM },
+          { role: "user", content: text },
+        ],
+      }),
+    });
+  } catch (e) {
+    // fetch() throws (not an HTTP status) on DNS/connection failures
+    const cause = e instanceof Error ? e.message : String(e);
+    throw new Error(`Could not reach Groq — check your internet connection (${cause})`);
+  }
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    const hint = res.status === 401 ? " — check GROQ_API_KEY in .env" : res.status === 429 ? " — rate limited, wait a moment" : "";
+    throw new Error(`Groq API returned ${res.status} ${res.statusText}${hint}. ${body.slice(0, 200)}`.trim());
+  }
+
   const data = await res.json();
-  return data.choices?.[0]?.message?.content ?? "";
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error("Groq returned an empty response");
+  return content;
 }
