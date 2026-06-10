@@ -4,7 +4,7 @@
 
 **An AI agent that proposes Ethereum transactions but cannot move a single wei without a human approving on a Ledger device.**
 
-**[Watch the 52-second demo →](https://youtu.be/cTTYlt7QG4Y)**
+**[Watch the demo (1:36) →](https://youtu.be/ZVlNclt1jbs)**
 
 *Built for the Ledger "Agent Stack: Build & Show" bounty (2026). Sponsor targeted: Ledger — Device Management Kit + Ethereum signer kit + Speculos.*
 
